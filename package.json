@@ -1,0 +1,30 @@
+{
+  "name": "taskflow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sistema acadêmico de gerenciamento de projetos e tarefas",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "postinstall": "npm run db:generate",
+    "dev": "concurrently -n BACKEND,FRONTEND -c blue,cyan \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "test": "npm --prefix backend test",
+    "db:generate": "npm --prefix backend run prisma:generate",
+    "db:migrate": "npm --prefix backend run prisma:migrate",
+    "jira:setup": "tsx scripts/setup-jira.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.2.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env/
+.env.local
+.env.*.local
+!.env.example
+dist/
+build/
+coverage/
+*.log
+*.db
+*.db-journal
+*.db.*
+backend/src/generated/prisma/
+.DS_Store
+frontend/dev-check.png
+frontend/test-results/
