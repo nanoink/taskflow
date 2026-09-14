@@ -125,6 +125,9 @@ Sincronização executada em 13/09/2026:
 - Sprint 3: ID `5`, estado **futura**
 - Sprint 4: ID `6`, estado **futura**
 - Issues da AC1: `SCRUM-6` até `SCRUM-17`, todas em **Concluído**
-- Issues das próximas sprints: mantidas no estado inicial
+- Epic `SCRUM-5` (Estrutura e Autenticação): **Concluído**
+- `SCRUM-37` (Melhorar responsividade) e `SCRUM-38` (Refinar UI): **Concluído**
+- Epic `SCRUM-33`, métricas, evolução do dashboard, testes finais, documentação e preparação da apresentação: **Em andamento**
+- CRUD de projetos, gerenciamento de tarefas, Kanban e filtros: **Tarefas pendentes**
 
 O board já possuía a sprint ativa `SCRUM Sprint 0`. Por segurança, a automação não encerrou nem alterou essa sprint preexistente e manteve a Sprint 1 do TaskFlow como futura. Para ativá-la, finalize a sprint preexistente no Jira e execute novamente `npm run jira:setup`.

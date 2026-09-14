@@ -1,8 +1,6 @@
 import {
-  ArrowRight,
   BarChart3,
   CheckCircle2,
-  CircleDot,
   Clock3,
   FolderKanban,
   LayoutDashboard,
@@ -11,7 +9,6 @@ import {
   Menu,
   Plus,
   Search,
-  Sparkles,
   X,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -36,7 +33,7 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
   return (
     <div className="flex h-full flex-col bg-[#0b1220] px-4 py-5 text-slate-300">
       <div className="flex items-center justify-between px-2">
-        <BrandMark inverse />
+        <strong className="text-xl font-bold tracking-[-0.035em] text-white">TaskFlow</strong>
         {onClose ? (
           <button onClick={onClose} className="p-1 text-slate-400" aria-label="Fechar menu">
             <X size={20} />
@@ -45,10 +42,7 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
       </div>
 
       <nav className="mt-10" aria-label="Navegação principal">
-        <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-          Workspace
-        </p>
-        <div className="mt-3 space-y-1">
+        <div className="space-y-1">
           {navigation.map(({ label, icon: Icon, active }) => (
             <button
               key={label}
@@ -60,21 +54,10 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
             >
               <Icon size={18} aria-hidden="true" />
               {label}
-              {!active ? (
-                <span className="ml-auto text-[9px] font-semibold uppercase tracking-wide text-slate-500">
-                  Em breve
-                </span>
-              ) : null}
             </button>
           ))}
         </div>
       </nav>
-
-      <div className="mt-auto rounded-xl border border-white/10 bg-white/[0.04] p-4">
-        <Sparkles size={18} className="text-blue-300" aria-hidden="true" />
-        <p className="mt-3 text-sm font-semibold text-white">Próxima sprint</p>
-        <p className="mt-1 text-xs leading-5 text-slate-400">Criação e gestão completa de projetos.</p>
-      </div>
     </div>
   );
 }
@@ -90,13 +73,6 @@ export function DashboardPage() {
   }
 
   const firstName = user?.name.split(' ')[0] ?? 'Usuário';
-  const initials = user?.name
-    .split(' ')
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase();
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 lg:grid lg:grid-cols-[250px_1fr]">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-[250px] lg:block">
@@ -142,9 +118,6 @@ export function DashboardPage() {
             </div>
 
             <div className="ml-auto flex items-center gap-3 border-l border-slate-200 pl-4">
-              <span className="grid size-9 place-items-center rounded-lg bg-slate-900 text-xs font-bold text-white">
-                {initials}
-              </span>
               <div className="hidden sm:block">
                 <p className="max-w-40 truncate text-sm font-semibold text-slate-800">{user?.name}</p>
                 <p className="max-w-40 truncate text-xs text-slate-400">{user?.email}</p>
@@ -165,16 +138,9 @@ export function DashboardPage() {
         <main className="mx-auto max-w-[1500px] px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
-              <p className="flex items-center gap-2 text-sm font-medium text-blue-600">
-                <CircleDot size={14} fill="currentColor" aria-hidden="true" />
-                Visão geral
-              </p>
-              <h1 className="mt-2 text-3xl font-bold tracking-[-0.04em] text-slate-950 sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-[-0.04em] text-slate-950 sm:text-4xl">
                 Bem-vindo, {firstName}
               </h1>
-              <p className="mt-2 text-sm text-slate-500 sm:text-base">
-                Acompanhe o andamento do seu trabalho em um só lugar.
-              </p>
             </div>
             <button
               type="button"
@@ -202,42 +168,16 @@ export function DashboardPage() {
             ))}
           </section>
 
-          <section className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_0.75fr]">
+          <section className="mt-6">
             <article className="min-h-[320px] rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.03)] sm:p-7">
               <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="font-bold tracking-tight text-slate-900">Atividade recente</h2>
-                  <p className="mt-1 text-sm text-slate-400">Suas últimas atualizações aparecerão aqui.</p>
-                </div>
+                <h2 className="font-bold tracking-tight text-slate-900">Atividade recente</h2>
                 <BarChart3 size={20} className="text-slate-300" aria-hidden="true" />
               </div>
               <div className="grid min-h-[220px] place-items-center text-center">
-                <div className="max-w-xs">
-                  <span className="mx-auto grid size-12 place-items-center rounded-xl bg-slate-100 text-slate-400">
-                    <FolderKanban size={23} aria-hidden="true" />
-                  </span>
-                  <p className="mt-4 text-sm font-semibold text-slate-700">Seu espaço está pronto</p>
-                  <p className="mt-1.5 text-sm leading-6 text-slate-400">
-                    Projetos e tarefas estarão disponíveis na próxima sprint.
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-2xl bg-[#0f1b30] p-6 text-white shadow-[0_18px_45px_rgba(15,27,48,0.12)] sm:p-7">
-              <span className="grid size-10 place-items-center rounded-xl bg-blue-500/20 text-blue-300">
-                <Sparkles size={20} aria-hidden="true" />
-              </span>
-              <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-blue-300">TaskFlow</p>
-              <h2 className="mt-2 text-2xl font-semibold leading-tight tracking-[-0.03em]">
-                A base está pronta. O próximo passo é criar.
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-slate-300">
-                Na Sprint 2, você poderá criar projetos, reunir tarefas e acompanhar cada entrega.
-              </p>
-              <div className="mt-7 flex items-center gap-2 text-sm font-semibold text-slate-400">
-                Disponível em breve
-                <ArrowRight size={16} aria-hidden="true" />
+                <span className="grid size-12 place-items-center rounded-xl bg-slate-100 text-slate-400">
+                  <FolderKanban size={23} aria-hidden="true" />
+                </span>
               </div>
             </article>
           </section>

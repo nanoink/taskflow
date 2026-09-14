@@ -40,11 +40,7 @@ export function LoginPage() {
   }
 
   return (
-    <AuthLayout
-      eyebrow="Bem-vindo de volta"
-      title="Entre na sua conta"
-      description="Acesse seu espaço e continue de onde parou."
-    >
+    <AuthLayout title="Entre na sua conta">
       {locationState?.success ? (
         <div className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status">
           <ShieldCheck size={18} className="mt-0.5 shrink-0" aria-hidden="true" />

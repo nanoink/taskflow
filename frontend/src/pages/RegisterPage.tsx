@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Eye, EyeOff, LockKeyhole, Mail, UserRound } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/AuthLayout';
 import { FormField } from '../components/FormField';
 import { SubmitButton } from '../components/SubmitButton';
@@ -69,11 +69,7 @@ export function RegisterPage() {
   );
 
   return (
-    <AuthLayout
-      eyebrow="Comece agora"
-      title="Crie sua conta"
-      description="Leva menos de um minuto para organizar seu próximo projeto."
-    >
+    <AuthLayout title="Crie sua conta">
       {requestError ? (
         <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {requestError}
@@ -136,12 +132,6 @@ export function RegisterPage() {
         </div>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-500">
-        Já tem uma conta?{' '}
-        <Link className="font-semibold text-blue-600 transition hover:text-blue-700" to="/login">
-          Fazer login
-        </Link>
-      </p>
     </AuthLayout>
   );
 }
