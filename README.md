@@ -116,6 +116,11 @@ As migrations são versionadas; o arquivo `.db` local não é versionado.
 | `POST` | `/api/auth/register` | Não | Cadastra usuário com senha protegida por hash |
 | `POST` | `/api/auth/login` | Não | Valida credenciais e retorna JWT |
 | `GET` | `/api/auth/me` | Bearer JWT | Retorna o usuário autenticado |
+| `GET` | `/api/projects` | Bearer JWT | Lista os projetos do usuário autenticado |
+| `GET` | `/api/projects/:projectId` | Bearer JWT | Retorna os detalhes de um projeto do usuário |
+| `POST` | `/api/projects` | Bearer JWT | Cria um projeto |
+| `PUT` | `/api/projects/:projectId` | Bearer JWT | Atualiza nome e descrição do projeto |
+| `DELETE` | `/api/projects/:projectId` | Bearer JWT | Exclui o projeto e seus dados relacionados |
 
 Exemplo de cadastro:
 
@@ -157,7 +162,16 @@ Funcionalidade entregue: cadastro e autenticação.
 
 ## Sprint 2
 
-CRUD de projetos.
+Funcionalidade entregue: gerenciamento completo de projetos.
+
+- Criação de projetos com nome e descrição
+- Listagem exclusiva dos projetos do usuário autenticado
+- Visualização dos detalhes de um projeto
+- Edição de nome e descrição
+- Exclusão com confirmação
+- Proteção contra acesso aos projetos de outra conta
+- Contador e atividade de projetos integrados ao dashboard
+- Testes de API para validação, autenticação, CRUD e isolamento entre usuários
 
 ## Sprint 3
 

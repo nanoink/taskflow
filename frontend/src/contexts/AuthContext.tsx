@@ -6,6 +6,7 @@ const TOKEN_KEY = 'taskflow:access-token';
 
 type AuthContextValue = {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (data: LoginInput) => Promise<void>;
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     apiRequest<{ user: User }>('/auth/me', { token })
       .then((response) => setUser(response.user))
-      .catch(() => localStorage.removeItem(TOKEN_KEY))
+      .catch(() => {
+        localStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -39,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       body: data,
     });
     localStorage.setItem(TOKEN_KEY, response.token);
+    setToken(response.token);
     setUser(response.user);
   }, []);
 
@@ -48,19 +54,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
+    setToken(null);
     setUser(null);
   }, []);
 
   const value = useMemo(
     () => ({
       user,
+      token,
       isAuthenticated: Boolean(user),
       isLoading,
       login,
       register,
       logout,
     }),
-    [user, isLoading, login, register, logout],
+    [user, token, isLoading, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

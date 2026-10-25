@@ -18,7 +18,6 @@ model User {
   updatedAt    DateTime  @updatedAt
 }
 
-// Estruturas preparadas para as próximas sprints. Ainda não há CRUD na AC1.
 model Project {
   id          Int      @id @default(autoincrement())
   name        String
