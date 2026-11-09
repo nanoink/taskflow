@@ -157,4 +157,141 @@ describe('TaskFlow API', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(404);
   });
+
+  it('executa o CRUD de tarefas, filtros e movimentação no Kanban com isolamento', async () => {
+    const loginResponse = await request(app)
+      .post('/api/auth/login')
+      .send({ email: testEmail, password: '123456' })
+      .expect(200);
+    const token = loginResponse.body.token as string;
+
+    const secondLoginResponse = await request(app)
+      .post('/api/auth/login')
+      .send({ email: secondTestEmail, password: '123456' })
+      .expect(200);
+    const secondToken = secondLoginResponse.body.token as string;
+
+    const projectResponse = await request(app)
+      .post('/api/projects')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Projeto da Sprint 3' })
+      .expect(201);
+    const projectId = projectResponse.body.project.id as number;
+
+    const foreignProjectResponse = await request(app)
+      .post('/api/projects')
+      .set('Authorization', `Bearer ${secondToken}`)
+      .send({ name: 'Projeto de outro usuário' })
+      .expect(201);
+    const foreignProjectId = foreignProjectResponse.body.project.id as number;
+
+    await request(app).get('/api/tasks').expect(401);
+    await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: '', projectId })
+      .expect(400);
+    await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Acesso indevido', projectId: foreignProjectId })
+      .expect(404);
+
+    const createResponse = await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'Gravar vídeo da Sprint 3',
+        description: 'Demonstrar CRUD e Kanban.',
+        status: 'TODO',
+        priority: 'HIGH',
+        dueDate: '2030-05-20',
+        projectId,
+      })
+      .expect(201);
+    const taskId = createResponse.body.task.id as number;
+
+    assert.equal(createResponse.body.task.priority, 'HIGH');
+    assert.equal(createResponse.body.task.status, 'TODO');
+    assert.equal(createResponse.body.task.project.id, projectId);
+    assert.match(createResponse.body.task.dueDate, /^2030-05-20/);
+
+    const listResponse = await request(app)
+      .get(`/api/tasks?projectId=${projectId}&priority=HIGH&status=TODO`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    assert.equal(listResponse.body.tasks.length, 1);
+    assert.equal(listResponse.body.tasks[0].id, taskId);
+
+    const projectWithTaskResponse = await request(app)
+      .get(`/api/projects/${projectId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+    assert.equal(projectWithTaskResponse.body.project.taskCount, 1);
+
+    await request(app)
+      .get(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${secondToken}`)
+      .expect(404);
+    await request(app)
+      .put(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${secondToken}`)
+      .send({ title: 'Tentativa indevida', projectId: foreignProjectId })
+      .expect(404);
+    await request(app)
+      .patch(`/api/tasks/${taskId}/status`)
+      .set('Authorization', `Bearer ${secondToken}`)
+      .send({ status: 'DONE' })
+      .expect(404);
+    await request(app)
+      .delete(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${secondToken}`)
+      .expect(404);
+
+    const updateResponse = await request(app)
+      .put(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'Gravar e revisar o vídeo',
+        description: 'Mostrar todos os critérios da Sprint 3.',
+        status: 'IN_PROGRESS',
+        priority: 'MEDIUM',
+        dueDate: '',
+        projectId,
+      })
+      .expect(200);
+    assert.equal(updateResponse.body.task.title, 'Gravar e revisar o vídeo');
+    assert.equal(updateResponse.body.task.dueDate, null);
+
+    const statusResponse = await request(app)
+      .patch(`/api/tasks/${taskId}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'DONE' })
+      .expect(200);
+    assert.equal(statusResponse.body.task.status, 'DONE');
+
+    await request(app)
+      .patch(`/api/tasks/${taskId}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'INVALID' })
+      .expect(400);
+
+    await request(app)
+      .delete(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+    await request(app)
+      .get(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+
+    await request(app)
+      .delete(`/api/projects/${projectId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+    await request(app)
+      .delete(`/api/projects/${foreignProjectId}`)
+      .set('Authorization', `Bearer ${secondToken}`)
+      .expect(204);
+  });
 });

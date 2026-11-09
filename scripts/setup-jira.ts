@@ -60,6 +60,7 @@ const apiToken = process.env.JIRA_API_TOKEN;
 const projectKey = 'SCRUM';
 const boardId = 1;
 const shouldMarkAc1Done = process.argv.includes('--mark-ac1-done');
+const shouldMarkSprintThreeDone = process.argv.includes('--mark-sprint3-done');
 
 if (!baseUrl || !email || !apiToken) {
   console.error(
@@ -424,14 +425,23 @@ async function main() {
     console.warn(`  Aviso: ${activeSprint.name} já está ativa; a Sprint 1 não foi ativada.`);
   }
 
-  console.log('7/7 Atualizando status da AC1...');
+  console.log('7/7 Atualizando status das entregas validadas...');
   let transitionedCount = 0;
-  if (shouldMarkAc1Done) {
+  const selectedDoneSummaries = [
+    ...(shouldMarkAc1Done
+      ? [epicDefinitions[0]!.name, ...sprintDefinitions[0]!.issueSummaries]
+      : []),
+    ...(shouldMarkSprintThreeDone
+      ? [epicDefinitions[2]!.name, ...sprintDefinitions[2]!.issueSummaries]
+      : []),
+  ];
+
+  if (selectedDoneSummaries.length > 0) {
     const refreshedIssues = await listAllIssues();
     const refreshedBySummary = new Map(
       refreshedIssues.map((issue) => [normalize(issue.fields.summary), issue]),
     );
-    for (const summary of sprintDefinitions[0]!.issueSummaries) {
+    for (const summary of selectedDoneSummaries) {
       const issue = refreshedBySummary.get(normalize(summary));
       if (issue && (await moveIssueToDone(issue))) {
         transitionedCount += 1;
@@ -439,7 +449,7 @@ async function main() {
       }
     }
   } else {
-    console.log('  Status preservados. Use --mark-ac1-done somente após validar toda a AC1.');
+    console.log('  Status preservados. Use uma opção --mark-... somente após validar toda a entrega.');
   }
 
   const finalIssues = await listAllIssues();

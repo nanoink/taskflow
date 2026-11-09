@@ -11,18 +11,29 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiRequest } from '../lib/api';
 import type { Project } from '../types/project';
+import type { Task } from '../types/task';
 
 export function DashboardPage() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     if (!token) return;
 
-    apiRequest<{ projects: Project[] }>('/projects', { token })
-      .then((response) => setProjects(response.projects))
-      .catch(() => setProjects([]));
+    Promise.all([
+      apiRequest<{ projects: Project[] }>('/projects', { token }),
+      apiRequest<{ tasks: Task[] }>('/tasks', { token }),
+    ])
+      .then(([projectResponse, taskResponse]) => {
+        setProjects(projectResponse.projects);
+        setTasks(taskResponse.tasks);
+      })
+      .catch(() => {
+        setProjects([]);
+        setTasks([]);
+      });
   }, [token]);
 
   const metrics = [
@@ -32,9 +43,19 @@ export function DashboardPage() {
       icon: FolderKanban,
       accent: 'bg-blue-50 text-blue-600',
     },
-    { label: 'Tarefas', value: 0, icon: ListTodo, accent: 'bg-violet-50 text-violet-600' },
-    { label: 'Em andamento', value: 0, icon: Clock3, accent: 'bg-amber-50 text-amber-600' },
-    { label: 'Concluídas', value: 0, icon: CheckCircle2, accent: 'bg-emerald-50 text-emerald-600' },
+    { label: 'Tarefas', value: tasks.length, icon: ListTodo, accent: 'bg-violet-50 text-violet-600' },
+    {
+      label: 'Em andamento',
+      value: tasks.filter((task) => task.status === 'IN_PROGRESS').length,
+      icon: Clock3,
+      accent: 'bg-amber-50 text-amber-600',
+    },
+    {
+      label: 'Concluídas',
+      value: tasks.filter((task) => task.status === 'DONE').length,
+      icon: CheckCircle2,
+      accent: 'bg-emerald-50 text-emerald-600',
+    },
   ];
 
   const firstName = user?.name.split(' ')[0] ?? 'Usuário';
@@ -65,7 +86,7 @@ export function DashboardPage() {
               <span className={`grid size-10 place-items-center rounded-xl ${accent}`}>
                 <Icon size={20} aria-hidden="true" />
               </span>
-              <span className="text-xs font-medium text-slate-400">Total</span>
+              <span className="text-xs font-medium text-slate-500">Total</span>
             </div>
             <p className="mt-5 text-3xl font-bold tracking-tight text-slate-950">{value}</p>
             <p className="mt-1 text-sm font-medium text-slate-500">{label}</p>
@@ -93,7 +114,7 @@ export function DashboardPage() {
                     className="min-w-0 text-left"
                   >
                     <span className="block truncate text-sm font-semibold text-slate-800">{project.name}</span>
-                    <span className="mt-0.5 block text-xs text-slate-400">
+                    <span className="mt-0.5 block text-xs text-slate-500">
                       {project.taskCount} {project.taskCount === 1 ? 'tarefa' : 'tarefas'}
                     </span>
                   </button>

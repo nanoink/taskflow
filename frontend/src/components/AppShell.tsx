@@ -15,6 +15,7 @@ import { BrandMark } from './BrandMark';
 const navigation = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
   { label: 'Projetos', icon: FolderKanban, to: '/projects' },
+  { label: 'Tarefas', icon: ListTodo, to: '/tasks' },
 ] as const;
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -46,15 +47,6 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               {label}
             </NavLink>
           ))}
-          <button
-            type="button"
-            disabled
-            title="Disponível na Sprint 3"
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500"
-          >
-            <ListTodo size={18} aria-hidden="true" />
-            Tarefas
-          </button>
         </div>
       </nav>
     </div>
@@ -122,7 +114,7 @@ export function AppShell() {
             <div className="ml-auto flex items-center gap-3 border-l border-slate-200 pl-4">
               <div className="hidden sm:block">
                 <p className="max-w-40 truncate text-sm font-semibold text-slate-800">{user?.name}</p>
-                <p className="max-w-40 truncate text-xs text-slate-400">{user?.email}</p>
+                <p className="max-w-40 truncate text-xs text-slate-500">{user?.email}</p>
               </div>
               <button
                 type="button"

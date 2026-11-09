@@ -104,6 +104,12 @@ Depois que cadastro, login, JWT, dashboard protegido, logout e testes tiverem si
 npm run jira:setup -- --mark-ac1-done
 ```
 
+Depois que o CRUD de tarefas, prioridades, prazos, status, Kanban e testes tiverem sido verificados, mover a Sprint 3 e seu Epic para DONE:
+
+```bash
+npm run jira:setup -- --mark-sprint3-done
+```
+
 O parâmetro explícito evita marcar trabalho incompleto por acidente. Issues futuras permanecem no estado inicial.
 
 Os nomes mantêm a intenção do planejamento original e respeitam o limite desta instância do Jira, que exige menos de 30 caracteres por nome de sprint. O objetivo completo de cada sprint fica registrado no campo **Objetivo**.
@@ -129,6 +135,7 @@ Sincronização executada em 13/09/2026:
 - `SCRUM-37` (Melhorar responsividade) e `SCRUM-38` (Refinar UI): **Concluído**
 - Epic `SCRUM-33`, métricas, evolução do dashboard, testes finais, documentação e preparação da apresentação: **Em andamento**
 - Epic `SCRUM-18` e histórias `SCRUM-19` até `SCRUM-23` do CRUD de projetos: **Concluído** em 25/10/2026
-- Gerenciamento de tarefas, Kanban e filtros: **Tarefas pendentes**
+- Epic `SCRUM-24` e histórias `SCRUM-25` até `SCRUM-32` da gestão de tarefas e Kanban: **Concluído** em 08/11/2026
+- Filtros avançados da Sprint 4: **Tarefas pendentes**
 
 O board já possuía a sprint ativa `SCRUM Sprint 0`. Por segurança, a automação não encerrou nem alterou essa sprint preexistente e manteve a Sprint 1 do TaskFlow como futura. Para ativá-la, finalize a sprint preexistente no Jira e execute novamente `npm run jira:setup`.

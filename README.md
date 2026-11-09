@@ -97,7 +97,7 @@ npm test
 
 ## Banco de dados
 
-O banco é um arquivo SQLite local gerenciado pelo Prisma, sem servidor externo. O schema inclui `User` e já deixa `Project` e `Task` preparados para as próximas sprints.
+O banco é um arquivo SQLite local gerenciado pelo Prisma, sem servidor externo. O schema inclui `User`, `Project` e `Task`, com exclusão em cascata e relacionamentos entre usuário, projetos e tarefas.
 
 Comandos úteis:
 
@@ -121,6 +121,12 @@ As migrations são versionadas; o arquivo `.db` local não é versionado.
 | `POST` | `/api/projects` | Bearer JWT | Cria um projeto |
 | `PUT` | `/api/projects/:projectId` | Bearer JWT | Atualiza nome e descrição do projeto |
 | `DELETE` | `/api/projects/:projectId` | Bearer JWT | Exclui o projeto e seus dados relacionados |
+| `GET` | `/api/tasks` | Bearer JWT | Lista as tarefas do usuário e aceita filtros por projeto, status e prioridade |
+| `GET` | `/api/tasks/:taskId` | Bearer JWT | Retorna os detalhes de uma tarefa |
+| `POST` | `/api/tasks` | Bearer JWT | Cria uma tarefa vinculada a um projeto |
+| `PUT` | `/api/tasks/:taskId` | Bearer JWT | Atualiza os dados completos de uma tarefa |
+| `PATCH` | `/api/tasks/:taskId/status` | Bearer JWT | Move a tarefa entre os status do Kanban |
+| `DELETE` | `/api/tasks/:taskId` | Bearer JWT | Exclui uma tarefa |
 
 Exemplo de cadastro:
 
@@ -145,6 +151,12 @@ O script pode ser executado repetidamente sem duplicar Epics, issues ou sprints.
 
 ```bash
 npm run jira:setup -- --mark-ac1-done
+```
+
+Depois de validar toda a gestão de tarefas e o Kanban da Sprint 3, use:
+
+```bash
+npm run jira:setup -- --mark-sprint3-done
 ```
 
 Mais detalhes estão em [docs/JIRA.md](docs/JIRA.md).
@@ -175,7 +187,19 @@ Funcionalidade entregue: gerenciamento completo de projetos.
 
 ## Sprint 3
 
-Gerenciamento de tarefas, prioridades, prazos, status e Kanban.
+Funcionalidade entregue: gerenciamento completo de tarefas e Kanban.
+
+- Criação de tarefas vinculadas a projetos
+- Listagem geral e por projeto
+- Edição de título, descrição, projeto, prioridade, prazo e status
+- Exclusão com confirmação
+- Prioridades baixa, média e alta
+- Prazos opcionais
+- Movimentação entre A fazer, Em andamento e Concluída
+- Quadro Kanban responsivo
+- Proteção contra acesso às tarefas e aos projetos de outra conta
+- Métricas de tarefas integradas ao dashboard
+- Testes de API para validação, filtros, CRUD, status e isolamento entre usuários
 
 ## Sprint 4
 
